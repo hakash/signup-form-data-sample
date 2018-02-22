@@ -34,11 +34,11 @@ http {\n\
 \n\
 server {\n\
   listen 80;\n\
+  root /website_files;\n\
   access_log /dev/stdout;\n\
-  error_page 404 = @notfound;\n\
   location / {\n\
-    root /website_files;\n\
-    try_files $uri $uri.html $uri/index.html index.html;\n\
+	index index.html;\n\
+    #try_files $uri $uri/ @notfound;\n\
   }\n\
 \n\
   location @notfound {\n\
