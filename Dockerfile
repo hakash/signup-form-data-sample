@@ -4,6 +4,7 @@ FROM alpine
 RUN apk add --no-cache git
 RUN apk add --no-cache openssh
 RUN apk add --no-cache nginx
+RUN apk add --no-cache shadow
 
 #Remove and replace the nginx.conf file
 RUN rm /etc/nginx/nginx.conf
@@ -48,9 +49,19 @@ server {\n\
 \n\
 }" > /etc/nginx/nginx.conf
 
+RUN groupadd -g 9999 appuser && \
+    useradd -r -m -u 9999 -g appuser appuser
+
 #Create needed directories for serving the files, storing the nginx.pid and the SSH keys
 RUN mkdir /website_files
+RUN chown appuser /website_files
+
 RUN mkdir -p /run/nginx
+RUN chmod +w /run/nginx
+
+USER appuser
+
+
 RUN mkdir ~/.ssh
 
 #Fetch the public host key from github and add to the known hosts file
@@ -109,18 +120,16 @@ vgVn7gVLOHXvQJN+y+j9EPPM0oiWyUEJD2t8qn1YT2///PltSIbS3j4D09iLGT3p\n\
 0ghJfytbm+lfrbD3AqXoEV92e2jKuj6LCbw2i53OxZU4GW4iQIcC8rYMQys2\n\
 -----END RSA PRIVATE KEY-----\n\
 ' > ~/.ssh/id_rsa && chmod 400 ~/.ssh/id_rsa
-
-#Start the ssh-agent and load the client key
-RUN eval $(ssh-agent) && ssh-add ~/.ssh/id_rsa
-
 #Set the current working directory
 WORKDIR /website_files
 
-#Get the website files
-RUN git clone git@github.com:hakash/login-signup-example.git .
+#Start the ssh-agent and load the client key
+RUN eval $(ssh-agent) && \
+	ssh-add ~/.ssh/id_rsa && \
+	git clone git@github.com:hakash/login-signup-example.git .
 
 #Publish the webserver port
-EXPOSE 80
+EXPOSE 8080
 
 #Start Nginx
 ENTRYPOINT [ "nginx" ]
