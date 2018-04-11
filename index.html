@@ -11,11 +11,14 @@
 		<link href="bootstrap.min.css" rel="stylesheet">
 		<script src="jquery-3.2.1.min.js"></script>
 		<script src="zxcvbn.js"></script>
+		<script src="Base64.js"></script>
+		<script src="sha256.min.js"></script>
 
 		<!-- Some custom CSS to pull it all together -->
 		<link href="signin.css" rel="stylesheet">
 
 		<!-- Our Javascript goes in here -->
+		<script src="Authenticator.js"></script>
 		<script src="app.js"></script>
 	</head>
 
@@ -35,10 +38,10 @@
 			<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
 			<div class="registerSection">
 				<p class="mt-5 mb-3">Don't have an account?</p>
-				<a href="#formSignup" class="btn btn-lg btn-primary btn-block btnToggleForm">Register now</a>
+				<a href="#formSignUp" class="btn btn-lg btn-primary btn-block btnToggleForm">Register now</a>
 			</div>
 			<p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p>
-		</form><form class="form-signup" id="formSignup">
+		</form><form class="form-signup" id="formSignUp">
 			<img class="mb-4" src="logo.png" alt="Logo">
 			<h1 class="h3 mb-3 font-weight-normal">Please register below</h1>
 			<label for="inputEmailSignUp" class="sr-only">Email address</label>

@@ -1,3 +1,16 @@
+var globalHeaders = [];
+
+function navigate(dest){
+	// Normally do some sort of navigation
+	alert("You navigated to: " + dest);
+}
+
+function displayError(error){
+	// Normally display this in a modal or
+	// other UI element on the page.
+	alert("Error:\n\n"+error);
+}
+
 $(()=>{
 	$(".btnToggleForm").on("click.formNavHandler",()=>{
 		$("form").toggle();
@@ -10,9 +23,26 @@ $(()=>{
 	$("#inputPasswordSignUp").on("blur.pwdInfo",()=>{
 		$("#passwordInfo").fadeOut();
 	});
+	
+	$("formSignIn").on("submit.submissionHandler",()=>{
+		var auth = new Authenticator();
+		auth.setURI("/token")
+		auth.setUsername($("#inputEmail").val());
+		auth.setPassword($("#inputPassword").val());
 
-	$("form").on("submit.submissionHandler",()=>{
-		alert("Submit!");
+		auth.authenticate((isAuthenticated)=>{
+			if(isAuthenticated){
+				globalHeaders.push("Authorize: Bearer " + auth.getToken());
+				navigate("/account");
+			}
+			else {
+				displayError("Authentication failed.")
+			}
+		});
+	});
+
+	$("formSignUp").on("submit.submissionHandler",()=>{
+		alert("Sign Up Submitted!");
 	});
 
 	$("#inputPasswordSignUp").on("input.pwdStrength", ()=>{
