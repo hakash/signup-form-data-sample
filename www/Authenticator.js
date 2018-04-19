@@ -30,7 +30,7 @@
 *		https://github.com/emn178/js-sha256
 */
 
-var Authenticator = ()=>{
+var Authenticator = function(){
 
 	var _username = "";
 	var _password = "";
@@ -38,33 +38,32 @@ var Authenticator = ()=>{
 	var _uri = "";
 	var _isAuthenticated = false;
 
+
+
 	return this;
 };
 
-Authenticator.prototype.setUsername = (username) => {
+Authenticator.prototype.setUsername = function(username) {
 	this._username = username;
-	return this;
 };
 
-Authenticator.prototype.setPassword = (password) => {
+Authenticator.prototype.setPassword = function(password) {
 	this._password = password;
-	return this;
 };
 
-Authenticator.prototype.setURI = (uri) => {
+Authenticator.prototype.setURI = function(uri) {
 	this._uri = uri;
-	return this;
 };
 
-Authenticator.prototype.getToken = () => {
-	return _token;
+Authenticator.prototype.getToken = function() {
+	return this._token;
 };
 
-Authenticator.prototype.isAuthenticated = () => {
-	return _isAuthenticated;
+Authenticator.prototype.isAuthenticated = function() {
+	return this._isAuthenticated;
 };
 
-Authenticator.prototype.generateSalt = (size) => {
+Authenticator.prototype.generateSalt = function(size) {
 	let choices = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-_";
 	let buffer = [];
 	while(size--){
@@ -73,43 +72,46 @@ Authenticator.prototype.generateSalt = (size) => {
 	return buffer.join('');
 };
 
-Authenticator.prototype.generateJWT = (username, password) => {
+Authenticator.prototype.generateJWT = function(username, password) {
 	var header = {
 		"alg" : "HS256",
 		"typ" : "JWT"
 	};
 
-	var encodedHeader = Base64.encode(header);
+	var encodedHeader = Base64.encode(JSON.stringify(header));
 
 	var payload = {
 		"sub" : username,
 		"salt" : this.generateSalt(10)
 	};
 
-	var encodedPayload = Base64.encode(payload);
+	var encodedPayload = Base64.encode(JSON.stringify(payload));
 
-	var signature = sha256.hmac(
+	var signature = Base64.encode(sha256.hmac(
 		payload.salt + password, 
 		encodedHeader + "." +
 		encodedPayload
-	);
+	));
 
 	return [encodedHeader,encodedPayload,signature].join('.');
 };
 
-Authenticator.prototype.authenticate = (callback) => {
+Authenticator.prototype.authenticate = function(callback) {
 	var data = this.generateJWT(this._username, this._password);
+
 	$.ajax({
-		url: _uri,
+		url: this._uri,
 		method: "POST",
 		headers: {
 			Accepts: "application/json"
 		},
 		data : data,
 		processData: false,
-		contentType: "application/json; charset=UTF8"
+		contentType: "application/jwt; charset=UTF8"
 	})
 	.done( (data, status, xhr) => {
+		console.log(data);
+		this._token = data;
 		callback(true);
 	})
 	.fail( (xhr, status, error) => {

@@ -1,8 +1,20 @@
-var globalHeaders = [];
+var globalHeaders = {
+	"Accepts": "application/json"
+};
 
 function navigate(dest){
 	// Normally do some sort of navigation
 	alert("You navigated to: " + dest);
+	$.ajax({
+		url: dest,
+		headers: globalHeaders
+	})
+	.done( (data, status, xhr) => {
+		console.log(data);
+	})
+	.fail( (xhr, status, error) => {
+		console.log(error);
+	});
 }
 
 function displayError(error){
@@ -24,15 +36,18 @@ $(()=>{
 		$("#passwordInfo").fadeOut();
 	});
 	
-	$("formSignIn").on("submit.submissionHandler",()=>{
+	$("#formSignIn").on("submit.submissionHandler",(event)=>{
+		event.preventDefault();
+
 		var auth = new Authenticator();
-		auth.setURI("/token")
+		auth.setURI("http://localhost:8081/token");
 		auth.setUsername($("#inputEmail").val());
 		auth.setPassword($("#inputPassword").val());
 
 		auth.authenticate((isAuthenticated)=>{
+			console.log(isAuthenticated);
 			if(isAuthenticated){
-				globalHeaders.push("Authorize: Bearer " + auth.getToken());
+				globalHeaders["Authorize"] = "Bearer " + auth.getToken();
 				navigate("/account");
 			}
 			else {
@@ -41,7 +56,7 @@ $(()=>{
 		});
 	});
 
-	$("formSignUp").on("submit.submissionHandler",()=>{
+	$("#formSignUp").on("submit.submissionHandler",()=>{
 		alert("Sign Up Submitted!");
 	});
 
