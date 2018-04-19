@@ -1,7 +1,6 @@
 var express = require("express");
 var jsonParser = require("body-parser").json();
 var rawParser = require("body-parser").raw({type:"application/jwt"});
-var sha256 = require("./sha256.min.js");
 var CryptoJS = require("crypto-js");
 
 var app = express();
