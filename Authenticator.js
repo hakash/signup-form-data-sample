@@ -82,7 +82,7 @@ Authenticator.prototype.generateJWT = (username, password) => {
 	var encodedHeader = Base64.encode(header);
 
 	var payload = {
-		"username" : username,
+		"sub" : username,
 		"salt" : this.generateSalt(10)
 	};
 
