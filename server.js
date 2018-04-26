@@ -29,7 +29,17 @@ app.use((req,res,next)=>{
 	next();
 });
 
-app.post("/token", function(req, res) {
+app.get("/", function( req, res ){
+	console.log("index non-authd");
+	res.sendFile(__dirname + "/templates/index.html");
+});
+
+app.get("/login", function( req, res ){
+	console.log("login non-authd");
+	res.sendFile(__dirname + "/templates/login.html");
+});
+
+app.post("/api/token", function(req, res) {
 	
 	if(validateJWT(req.body.toString())){
 		res.status(200);
@@ -42,8 +52,22 @@ app.post("/token", function(req, res) {
 
 // Auth required
 app.get("/account", isValidCreds, function(req, res) {
+	console.log("sending account.html");
+	//res.sendFile(__dirname + "/www/account.html",{},(error)=>{console.log(error)});
+	var fs = require("fs");
+	var file = fs.readFileSync(__dirname + "/templates/account.html");
 	res.status(200);
-	res.end("Account\n");
+	res.end(file);
+});
+
+// Auth required
+app.get("/settings", isValidCreds, function(req, res) {
+	console.log("sending settings.html");
+	//res.sendFile(__dirname + "/www/account.html",{},(error)=>{console.log(error)});
+	var fs = require("fs");
+	var file = fs.readFileSync(__dirname + "/templates/settings.html");
+	res.status(200);
+	res.end(file);
 });
 
 // start the server
@@ -75,7 +99,14 @@ function generateToken(payload){
 
 function isValidCreds(req,res, next){
 	
-	console.log(req.headers);
+	if(hasValidated(req)){
+		next();
+	}
+	res.status(401);
+	res.end("Unauthorized");
+}
+
+function hasValidated(req){
 	var authz = req.headers["authorize"];
 	if(typeof authz !== 'undefined'){
 		var authzParts = authz.split(" ");
@@ -83,12 +114,11 @@ function isValidCreds(req,res, next){
 
 			if( validateJWT(authzParts[1]) ){
 				console.log("Authorized");
-				next();
+				return true;
 			}	
 		}
 	}
-	res.status(401);
-	res.end("Unauthorized");
+	return false;
 }
 
 function validateJWT(jwtstring) {
@@ -100,11 +130,6 @@ function validateJWT(jwtstring) {
 
 	var encodedHeader = Buffer.from(JSON.stringify(header)).toString('base64');
 	var encodedPayload = Buffer.from(JSON.stringify(payload)).toString('base64');
-
-	console.log("header",header, "payload",payload);
-	console.log("header",encodedHeader, jwtParts[0]);
-	console.log( "payload",encodedPayload, jwtParts[1]);
-
 
 	var username = payload.sub;
 	currentUser = username;
@@ -120,8 +145,6 @@ function validateJWT(jwtstring) {
 	);
 	veriSign = veriSign.replace('/','_');
 	veriSign = veriSign.replace('+','-');
-
-	console.log( "signature\n",veriSign,"\n", signature);
 
 	return veriSign === signature;
 }

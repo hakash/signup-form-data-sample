@@ -1,0 +1,42 @@
+<form class="form-signin" id="formSignIn">
+		<img class="mb-4" src="logo.png" alt="logo">
+		<h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+		<label for="inputEmail" class="sr-only">Email address</label>
+		<input type="email" id="inputEmail" class="form-control" placeholder="Email address" autocomplete="email" required autofocus>
+		<label for="inputPassword" class="sr-only">Password</label>
+		<input type="password" id="inputPassword" class="form-control" placeholder="Password" autocomplete="password" required>
+		<div class="checkbox mb-3">
+		<label>
+			<input type="checkbox" value="remember-me"> Remember me
+		</label>
+		</div>
+		<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+		<div class="registerSection">
+			<p class="mt-5 mb-3">Don't have an account?</p>
+			<a href="#formSignUp" class="btn btn-lg btn-primary btn-block btnToggleForm">Register now</a>
+		</div>
+		<p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p>
+	</form><form class="form-signup" id="formSignUp">
+		<img class="mb-4" src="logo.png" alt="Logo">
+		<h1 class="h3 mb-3 font-weight-normal">Please register below</h1>
+		<label for="inputEmailSignUp" class="sr-only">Email address</label>
+		<input type="email" id="inputEmailSignUp" class="form-control" placeholder="Email address" autocomplete="email" required autofocus>
+		<label for="inputPasswordSignUp" class="sr-only">Password</label>
+		<div id="pwdContainer">
+			<div id="passwordInfo">
+				The password requires numbers, upper and lower case letters as well as a minimum length of 8 characters.
+				<meter id="pwdStrengthMeter" max="4" min="0" low="1" high="2" optimum="4"></meter>
+				<p id="pwdStrengthText"></p>
+				<p id="pwdStrengthTextHelper"></p>
+			</div>
+			<input type="password" id="inputPasswordSignUp" class="form-control" placeholder="Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required>
+			<label for="inputPasswordSignUpRepeat" class="sr-only">Password again</label>
+			<input type="password" id="inputPasswordSignUpRepeat" class="form-control" placeholder="Confirm password" required>
+		</div>
+		<button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+		<label>
+				<p class="mt-5 mb-3">Already have an account?</p>
+				<a href="#formSignIn" class="btn btn-lg btn-primary btn-block btnToggleForm">Sign in</a>
+			</label>
+			<p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p>
+	</form>

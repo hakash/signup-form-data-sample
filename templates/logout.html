@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=100%, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Logout</title>
+	<script>
+		(()=>{
+			if(typeof(Storage) !== "undefined"){
+				localStorage.removeItem("jwtToken");
+			}
+			else {
+				var d = new Date();
+				d.setTime(0);
+				var expires = "expires="+ d.toUTCString();
+				document.cookie = "jwtToken=;" + expires + ";path=/";
+			}
+
+			document.location.href = "/";
+		})();
+	</script>
+</head>
+</html>
