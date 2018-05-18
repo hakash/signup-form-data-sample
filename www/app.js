@@ -111,7 +111,7 @@ function loadLogin() {
 	$("#formSignIn").on("submit.submissionHandler", (event) => {
 		event.preventDefault();
 		var auth = new Authenticator();
-		auth.setURI("http://localhost:8081/api/token");
+		auth.setURI("/api/token");
 		auth.setUsername($("#inputEmail").val());
 		auth.setPassword($("#inputPassword").val());
 		auth.authenticate((isAuthenticated) => {
