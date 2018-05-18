@@ -98,18 +98,6 @@ function displayError(error){
 	alert("Error:\n\n"+error);
 }
 
-$(()=>{
-	var token = getToken();
-	console.log("token",token);
-	if(token !== ""){
-		globalHeaders["Authorize"] = "Bearer " + token;
-		navigate("/account");
-	}
-	else {
-		navigate("/login",loadLogin);
-	}
-});
-
 function loadLogin() {
 	$(".btnToggleForm").on("click.formNavHandler", () => {
 		$("form").toggle();
@@ -138,9 +126,18 @@ function loadLogin() {
 			}
 		});
 	});
-	$("#formSignUp").on("submit.submissionHandler", () => {
-		alert("Sign Up Submitted!");
+
+	$("#formSignUp").on("submit.submissionHandler", function(event){
+		submitAjaxForm(event, (data)=>{
+			alert("Sucess! Please log in below now!");
+			$("form").toggle();
+			console.log(data);
+		}, (data)=>{
+			alert("An error ocurred. Please try again.");
+			console.log(data);
+		})
 	});
+
 	$("#inputPasswordSignUp").on("input.pwdStrength", () => {
 		var strength = {
 			0: "Worst",
@@ -189,3 +186,37 @@ function loadLogin() {
 		}
 	});
 }
+
+
+function submitAjaxForm(event, success, error){
+
+	let url = $(event.target).attr('action');
+	let data = $(event.target).serialize();
+	console.log("data:",data);
+	$.ajax({
+		type: "POST",
+		url: url,
+		data: data,
+		contentType: "application/x-www-form-urlencoded; charset=utf-8",
+		success:success,
+		error:error
+	});
+
+	event.preventDefault();
+}
+
+
+
+
+
+$(()=>{
+	var token = getToken();
+	console.log("token",token);
+	if(token !== ""){
+		globalHeaders["Authorize"] = "Bearer " + token;
+		navigate("/account");
+	}
+	else {
+		navigate("/login",loadLogin);
+	}
+});

@@ -1,4 +1,5 @@
 var express = require("express");
+var urlencbodyParser = require("body-parser").urlencoded({type:"application/x-www-form-urlencoded", extended:true});
 var jsonParser = require("body-parser").json();
 var rawParser = require("body-parser").raw({type:"application/jwt"});
 var CryptoJS = require("crypto-js");
@@ -22,6 +23,7 @@ app.use((req,res,next)=>{
 });
 app.use(express.static('www'));
 app.use(rawParser);
+app.use(urlencbodyParser);
 app.use(jsonParser);
 app.use((req,res,next)=>{
 	console.log("resetting user");
@@ -48,6 +50,36 @@ app.post("/api/token", function(req, res) {
 
 	res.status(401);
 	res.end("Unauthorized");
+});
+
+app.post("/api/signup", function(req, res){
+	console.log("Got formdata:",req.body);
+
+	let username = req.body.inputEmailSignUp;
+	let pwd = req.body.inputPasswordSignUp;
+	let found = false;
+
+	let keys = Object.keys(secrets);
+	keys.forEach((item)=>{
+		if(item === username){
+			found = true;
+			return false;
+		}
+	});
+
+	if(!found){
+		secrets[username] = {};
+		secrets[username].secret = pwd;
+		secrets[username].salt = "";
+
+		res.status(200);
+		res.end();
+	}
+	else {
+		res.status(409);
+		res.header("Content-Type: application/json; charset: utf-8");
+		res.end('{"error":"Username already registered."}');
+	}
 });
 
 // Auth required
@@ -133,8 +165,10 @@ function validateJWT(jwtstring) {
 
 	var username = payload.sub;
 	currentUser = username;
+	console.log("Verifying user:",username);
 
 	var secret = secrets[username].secret;
+	console.log("secret:",secret);
 	var salt = payload.salt;
 	secrets[username].salt = salt;
 

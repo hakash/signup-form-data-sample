@@ -16,11 +16,11 @@
 			<a href="#formSignUp" class="btn btn-lg btn-primary btn-block btnToggleForm">Register now</a>
 		</div>
 		<p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p>
-	</form><form class="form-signup" id="formSignUp">
+	</form><form class="form-signup" action="/api/signup" id="formSignUp">
 		<img class="mb-4" src="logo.png" alt="Logo">
 		<h1 class="h3 mb-3 font-weight-normal">Please register below</h1>
 		<label for="inputEmailSignUp" class="sr-only">Email address</label>
-		<input type="email" id="inputEmailSignUp" class="form-control" placeholder="Email address" autocomplete="email" required autofocus>
+		<input type="email" id="inputEmailSignUp" name="inputEmailSignUp" class="form-control" placeholder="Email address" autocomplete="email" required autofocus>
 		<label for="inputPasswordSignUp" class="sr-only">Password</label>
 		<div id="pwdContainer">
 			<div id="passwordInfo">
@@ -29,7 +29,7 @@
 				<p id="pwdStrengthText"></p>
 				<p id="pwdStrengthTextHelper"></p>
 			</div>
-			<input type="password" id="inputPasswordSignUp" class="form-control" placeholder="Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required>
+			<input type="password" id="inputPasswordSignUp" name="inputPasswordSignUp" class="form-control" placeholder="Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required>
 			<label for="inputPasswordSignUpRepeat" class="sr-only">Password again</label>
 			<input type="password" id="inputPasswordSignUpRepeat" class="form-control" placeholder="Confirm password" required>
 		</div>
